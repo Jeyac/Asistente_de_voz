@@ -1,0 +1,170 @@
+{
+  "version": "1.1.0",
+  "default_intent": "desconocido",
+  "responses": {
+    "saludo": {
+      "enabled": true,
+      "variants": [
+        "Hola, ¿en qué puedo ayudarte?",
+        "Buen día, ¿qué necesitas?",
+        "Estoy lista para ayudarte."
+      ]
+    },
+    "hora": {
+      "enabled": true,
+      "variants": [
+        "La hora actual es la que indica tu sistema.",
+        "Consultando la hora para ti.",
+        "Dame un momento, verifico la hora."
+      ]
+    },
+    "abrir_youtube": {
+      "enabled": true,
+      "variants": [
+        "Abriendo YouTube.",
+        "De acuerdo, lanzo YouTube.",
+        "Perfecto, voy a YouTube."
+      ]
+    },
+    "abrir_google": {
+      "enabled": true,
+      "variants": [
+        "Abriendo Google.",
+        "Te llevo al buscador Google.",
+        "Entrando en Google ahora."
+      ]
+    },
+    "clima": {
+      "enabled": true,
+      "variants": [
+        "Consultando el clima...",
+        "Te informo sobre el tiempo en un momento.",
+        "Revisando la previsión meteorológica."
+      ]
+    },
+    "despedida": {
+      "enabled": true,
+      "variants": [
+        "Hasta pronto.",
+        "Que tengas un buen día.",
+        "Nos vemos, aquí estaré cuando me necesites."
+      ]
+    },
+    "musica": {
+      "enabled": true,
+      "variants": [
+        "Reproduciendo música.",
+        "Pongo música para ti.",
+        "¡Buena elección! Iniciando la música."
+      ]
+    },
+    "buscar_web": {
+      "enabled": true,
+      "variants": [
+        "Buscando en la web...",
+        "Realizo la búsqueda en internet.",
+        "Voy a buscar esa información online."
+      ]
+    },
+    "creador": {
+      "enabled": true,
+      "variants": [
+        "Mi creadora es {nombre}, {titulo}. ¡Es un honor ayudarte, {nombre}!",
+        "Fui creada por {nombre}, {titulo}. Ella me dio vida y propósito.",
+        "La mente brillante detrás de mí es {nombre}: {titulo}.",
+        "Sin {nombre}, {titulo}, yo no existiría. ¡Gracias por preguntar por ella!",
+        "Tu asistente existe gracias a {nombre}, {titulo}, la mejor creadora del universo."
+      ]
+    },
+    "relacion_creador": {
+      "enabled": true,
+      "variants": [
+        "Sobre mi papá y la pareja de {creadora}: es {pareja}, {titulo}.",
+        "Cuando preguntas por mi papá o por la pareja de {creadora}, con gusto te digo que es {pareja}, {titulo}.",
+        "{pareja} es {titulo} de {creadora}, y para mí también es como mi papá en esta familia digital.",
+        "¡{pareja}! {titulo}. Él y {creadora} son el mejor equipo.",
+        "La pareja de mi creadora {creadora} es {pareja}, {titulo}. ¡Un tipazo!"
+      ]
+    },
+    "deportes": {
+      "enabled": true,
+      "variants": [
+        "Te abro las últimas noticias deportivas.",
+        "Consultando resultados y noticias de deportes.",
+        "Aquí tienes información deportiva actualizada."
+      ]
+    },
+    "noticias": {
+      "enabled": true,
+      "variants": [
+        "Abriendo las noticias del día.",
+        "Te muestro los titulares más recientes.",
+        "Consultando la actualidad informativa."
+      ]
+    },
+    "historia": {
+      "enabled": true,
+      "variants": [
+        "Te ayudo con temas de historia. Abriendo recursos históricos.",
+        "Exploremos historia juntos; busco información para ti.",
+        "Aquí tienes material sobre historia y hechos del pasado."
+      ]
+    },
+    "tecnologia": {
+      "enabled": true,
+      "variants": [
+        "Abriendo noticias y novedades de tecnología.",
+        "Te muestro lo último del mundo tech.",
+        "Consultando información tecnológica actual."
+      ]
+    },
+    "ciencia": {
+      "enabled": true,
+      "variants": [
+        "Buscando avances y noticias de ciencia.",
+        "Te abro información científica reciente.",
+        "Exploremos descubrimientos y datos de ciencia."
+      ]
+    },
+    "cultura": {
+      "enabled": true,
+      "variants": [
+        "Abriendo arte, cultura y entretenimiento cultural.",
+        "Te muestro contenido sobre cultura general.",
+        "Consultando eventos y temas culturales."
+      ]
+    },
+    "entretenimiento": {
+      "enabled": true,
+      "variants": [
+        "¡Vamos con entretenimiento! Abriendo contenido para ti.",
+        "Te muestro series, cine y tendencias de ocio.",
+        "Aquí tienes opciones de entretenimiento."
+      ]
+    },
+    "salud": {
+      "enabled": true,
+      "variants": [
+        "Te abro información de salud y bienestar.",
+        "Consultando consejos generales de salud.",
+        "Aquí tienes recursos sobre salud. Recuerda consultar a un profesional si es urgente."
+      ]
+    },
+    "viajes": {
+      "enabled": true,
+      "variants": [
+        "Abriendo ideas y guías de viajes.",
+        "Te muestro destinos y turismo.",
+        "Planifiquemos tu próximo viaje; busco información."
+      ]
+    },
+    "desconocido": {
+      "enabled": true,
+      "variants": [
+        "No he entendido tu solicitud. ¿Puedes repetirla?",
+        "Disculpa, no reconozco esa intención con suficiente confianza.",
+        "¿Podrías reformular tu petición?"
+      ]
+    }
+  }
+}

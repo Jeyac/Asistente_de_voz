@@ -1,0 +1,34 @@
+# Entorno
+.env
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Modelos (pesados; conservar estructura con .gitkeep)
+models/tensorflow/*
+!models/tensorflow/.gitkeep
+models/wakeword/*
+!models/wakeword/.gitkeep
+
+# IDE y sistema
+.idea/
+.vscode/
+*.swp
+.DS_Thumbs.db
+
+# Logs locales
+logs/
+*.log

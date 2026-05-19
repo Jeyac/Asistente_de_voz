@@ -1,0 +1,30 @@
+# API y servidor
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+
+# ML (intenciones) — Docker/Render usa Python 3.12
+tensorflow==2.18.1
+
+# NLP (spaCy) — Render/Docker usa Python 3.12; local con 3.13 usa versión compatible
+spacy==3.8.3; python_version < "3.13"
+spacy>=3.8.14,<4.0.0; python_version >= "3.13"
+
+# Voz
+SpeechRecognition==3.12.0
+PyAudio==0.2.14
+
+# Palabra clave (wake word)
+openwakeword==0.6.0
+pvporcupine==3.0.5
+
+# Utilidades
+python-dotenv==1.0.1
+httpx==0.28.1
+
+# Calidad (desarrollo)
+pytest==8.3.4
+pytest-asyncio==0.25.0
+ruff==0.8.4

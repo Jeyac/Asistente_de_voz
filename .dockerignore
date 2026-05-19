@@ -1,0 +1,48 @@
+# Entornos locales
+.venv/
+venv/
+env/
+frontend/node_modules/
+frontend/dist/
+
+# Git y CI
+.git/
+.github/
+.cursor/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Secretos
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Logs locales (el contenedor genera los suyos)
+logs/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Modelos locales (se entrenan en el build de Docker)
+models/tensorflow/*
+!models/tensorflow/.gitkeep
+models/wakeword/*
+!models/wakeword/.gitkeep
+
+# Documentación y tests no necesarios en imagen
+tests/
+agent-transcripts/

@@ -1,0 +1,101 @@
+# Blueprint Render: API + frontend estático
+# Documentación: DEPLOY.md
+
+services:
+  # --- API (Python nativo, sin Docker) ---
+  - type: web
+    name: asistente-voz-api
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: bash scripts/render_build.sh
+    startCommand: bash scripts/render_start.sh
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: ENABLE_DOCS
+        value: "false"
+      - key: API_PREFIX
+        value: /api/v1
+      - key: HOST
+        value: 0.0.0.0
+      - key: WORKERS
+        value: "1"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: LOG_FORMAT
+        value: json
+      - key: LOG_TO_FILE
+        value: "false"
+      - key: LOG_SLOW_REQUEST_MS
+        value: "1000"
+      - key: DATA_DIR
+        value: data
+      - key: INTENTS_DATASET_PATH
+        value: data/intents/intents_dataset.json
+      - key: RESPONSES_DATA_PATH
+        value: data/responses/responses.json
+      - key: TENSORFLOW_MODELS_DIR
+        value: models/tensorflow
+      - key: TF_MODEL_FILENAME
+        value: intent_classifier.keras
+      - key: TF_TOKENIZER_FILENAME
+        value: tokenizer.json
+      - key: TF_LABELS_FILENAME
+        value: labels.json
+      - key: TF_METADATA_FILENAME
+        value: training_metadata.json
+      - key: TF_CONFIDENCE_THRESHOLD
+        value: "0.75"
+      - key: TF_FALLBACK_INTENT
+        value: desconocido
+      - key: TF_EPOCHS
+        value: "120"
+      - key: TF_VALIDATION_SPLIT
+        value: "0"
+      - key: RETRAIN_INTENTS_ALWAYS
+        value: "true"
+      - key: SPEECH_RECOGNITION_LANGUAGE
+        value: es-ES
+      - key: SPACY_MODEL
+        value: es_core_news_sm
+      - key: WAKEWORD_ENABLED
+        value: "true"
+      - key: WAKEWORD_ENGINE
+        value: openwakeword
+      - key: WAKEWORD_PHRASE
+        value: hey jarvis
+      - key: WAKEWORD_MODEL_PATH
+        value: models/wakeword/hey_jarvis_v0.1.onnx
+      - key: WAKEWORD_THRESHOLD
+        value: "0.4"
+      - key: WAKEWORD_LISTEN_TIMEOUT
+        value: "60"
+      - key: ENABLE_SYSTEM_ACTIONS
+        value: "true"
+      - key: CREATOR_NAME
+        value: Jéraldyn
+      - key: CREATOR_DISPLAY_TITLE
+        value: la hermosa, inteligente, capaz, independiente, empoderada y maravillosa
+      - key: PARTNER_NAME
+        value: Kevin Estrada
+      - key: PARTNER_DISPLAY_TITLE
+        value: su guapo, precioso, hermoso, maravilloso e increíble novio
+      # URL del frontend estático (configurar tras crear asistente-voz-web):
+      - key: CORS_ORIGINS
+        sync: false
+
+  # --- Frontend (Static Site) ---
+  - type: web
+    name: asistente-voz-web
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
