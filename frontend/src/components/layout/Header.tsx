@@ -1,3 +1,6 @@
+/**
+ * Componente de layout: Header.
+ */
 import { Badge } from "../ui/Badge";
 
 interface HeaderProps {

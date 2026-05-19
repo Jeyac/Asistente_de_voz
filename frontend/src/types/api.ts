@@ -1,3 +1,6 @@
+/** Tipos compartidos entre servicios HTTP y componentes React. */
+
+/** Estados visibles del asistente en la interfaz. */
 export type AssistantStatus =
   | "idle"
   | "wake_listening"
@@ -6,6 +9,7 @@ export type AssistantStatus =
   | "success"
   | "error";
 
+/** Respuesta de POST /voice/process y /voice/process-audio. */
 export interface VoiceProcessResult {
   transcript: string;
   language: string;

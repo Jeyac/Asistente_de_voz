@@ -1,7 +1,14 @@
+/**
+ * Cliente HTTP base para la API REST del asistente.
+ *
+ * En desarrollo usa el proxy de Vite (/api/v1). En producción, VITE_API_BASE_URL
+ * apunta a la API en Render.
+ */
 import type { ApiErrorBody } from "../types/api";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "/api/v1";
 
+/** Error con código HTTP y cuerpo JSON devuelto por FastAPI. */
 export class ApiError extends Error {
   constructor(
     message: string,

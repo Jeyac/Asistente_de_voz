@@ -1,3 +1,6 @@
+/**
+ * Componente UI reutilizable: Spinner.
+ */
 interface SpinnerProps {
   size?: "sm" | "md" | "lg";
 }

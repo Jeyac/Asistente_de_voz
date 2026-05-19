@@ -55,6 +55,7 @@ export class AudioRecorder {
   private processor: ScriptProcessorNode | null = null;
   private chunks: Float32Array[] = [];
 
+  /** Solicita permiso de micrófono y empieza a acumular buffers de audio. */
   async start(): Promise<void> {
     this.mediaStream = await navigator.mediaDevices.getUserMedia({
       audio: {
@@ -81,6 +82,7 @@ export class AudioRecorder {
     this.processor.connect(this.audioContext.destination);
   }
 
+  /** Detiene la grabación y devuelve un Blob WAV listo para subir a la API. */
   async stop(): Promise<Blob> {
     const sampleRate = this.audioContext?.sampleRate ?? TARGET_SAMPLE_RATE;
 

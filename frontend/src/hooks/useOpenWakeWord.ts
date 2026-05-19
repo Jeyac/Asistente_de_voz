@@ -1,3 +1,9 @@
+/**
+ * Hook de detección de palabra clave «Hey Jarvis».
+ *
+ * Captura audio en el navegador, envía fragmentos PCM al servidor (openWakeWord)
+ * y dispara onWakeWord cuando la puntuación supera el umbral configurado.
+ */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "../services/apiClient";
 import {
@@ -10,9 +16,13 @@ import {
 } from "../services/activationService";
 import { WAKE_CHUNK_SAMPLES, WakeWordMicStream } from "../utils/wakeWordMicStream";
 
+/** Pausa tras activar para no disparar dos veces seguidas. */
 const COOLDOWN_MS = 2500;
+/** Fragmentos por petición HTTP (menos latencia en Render). */
 const CHUNKS_PER_BATCH = 4;
+/** Cola máxima si la red va lenta (se descartan los más viejos). */
 const MAX_QUEUE_CHUNKS = 32;
+/** Envía lotes parciales aunque no haya 4 fragmentos listos. */
 const FLUSH_INTERVAL_MS = 280;
 
 export interface UseOpenWakeWordOptions {
@@ -23,6 +33,7 @@ export interface UseOpenWakeWordOptions {
   onWakeWord: () => void;
 }
 
+/** Concatena varios fragmentos PCM en un solo buffer para /score-chunks. */
 function concatChunks(chunks: Int16Array[]): ArrayBuffer {
   const bytesPerChunk = WAKE_CHUNK_SAMPLES * 2;
   const merged = new Uint8Array(chunks.length * bytesPerChunk);
@@ -56,12 +67,17 @@ export function useOpenWakeWord({
     onWakeWordRef.current = onWakeWord;
   }, [onWakeWord]);
 
+  /**
+   * Puntúa un lote en el servidor. Si /score-chunks no existe (API antigua),
+   * hace fallback a score-chunk uno a uno.
+   */
   const scoreBatch = useCallback(
     async (sessionId: string, batch: Int16Array[]): Promise<WakeWordChunkScore> => {
       if (!useLegacyChunksRef.current) {
         try {
           return await scoreWakeWordChunks(sessionId, concatChunks(batch));
         } catch (err) {
+          // API en Render sin redesplegar: usar endpoint legacy.
           if (err instanceof ApiError && err.status === 404) {
             useLegacyChunksRef.current = true;
           } else {
@@ -100,6 +116,7 @@ export function useOpenWakeWord({
       .catch(() => setConfig(null));
   }, [apiOnline]);
 
+  /** Envía fragmentos en cola al servidor de forma secuencial (estado del modelo). */
   const drainQueue = useCallback(async () => {
     if (drainingRef.current || cooldownRef.current) return;
     drainingRef.current = true;
@@ -165,6 +182,7 @@ export function useOpenWakeWord({
     }
   }, []);
 
+  // Arranca o detiene el micrófono de wake word según configuración y pausa.
   useEffect(() => {
     const canListen =
       enabled && apiOnline && !micPaused && config?.enabled && config.engine === "openwakeword";

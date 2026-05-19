@@ -1,3 +1,6 @@
+/**
+ * Componente del asistente de voz: TranscriptPanel.
+ */
 import { Card } from "../ui/Card";
 
 interface TranscriptPanelProps {

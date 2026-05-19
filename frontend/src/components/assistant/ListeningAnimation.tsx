@@ -1,3 +1,6 @@
+/**
+ * Componente del asistente de voz: ListeningAnimation.
+ */
 interface ListeningAnimationProps {
   active: boolean;
 }

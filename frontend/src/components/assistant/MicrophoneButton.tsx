@@ -1,6 +1,10 @@
+/**
+ * Componente del asistente de voz: MicrophoneButton.
+ */
 import { ListeningAnimation } from "./ListeningAnimation";
 import { Spinner } from "../ui/Spinner";
 
+/** Props del botón central de grabación manual (sin wake word). */
 interface MicrophoneButtonProps {
   isListening: boolean;
   isProcessing: boolean;

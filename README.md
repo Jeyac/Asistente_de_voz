@@ -27,7 +27,7 @@ Diseñado con **arquitectura limpia**, despliegue en **Render** vía Docker y si
 - [Despliegue](#despliegue)
 - [Tests](#tests)
 - [Variables de entorno](#variables-de-entorno)
-- [Documentación adicional](#documentación-adicional)
+- [Documentación del código](#documentación-adicional)
 
 ---
 
@@ -38,11 +38,11 @@ Diseñado con **arquitectura limpia**, despliegue en **Render** vía Docker y si
 | **Reconocimiento de voz** | SpeechRecognition (Google) — texto, WAV y micrófono local |
 | **Clasificación de intenciones** | Red neuronal Keras entrenada con dataset JSON |
 | **Respuestas inteligentes** | Variantes aleatorias por intención desde `responses.json` |
-| **Wake word** | openWakeWord / Porcupine — solo entorno local |
+| **Wake word** | «Hey Jarvis» — micrófono en navegador + openWakeWord en API (Render y local) |
 | **Frontend** | React + Vite + Tailwind — grabación WAV y envío a la API |
 | **Producción** | Docker multi-stage, healthcheck, logs JSON, Render Blueprint |
 
-**Intenciones soportadas:** `saludo`, `hora`, `abrir_youtube`, `abrir_google`, `clima`, `despedida`, `musica`, `buscar_web` (+ fallback `desconocido`).
+**Intenciones soportadas (19):** `saludo`, `hora`, `abrir_youtube`, `abrir_google`, `clima`, `despedida`, `musica`, `buscar_web`, `creador`, `relacion_creador`, `deportes`, `noticias`, `historia`, `tecnologia`, `ciencia`, `cultura`, `entretenimiento`, `salud`, `viajes` (+ fallback `desconocido`).
 
 ---
 
@@ -165,8 +165,16 @@ Asistente de voz/
 ├── .env.production.example
 ├── DEPLOY.md                   # Guía de despliegue detallada
 └── docs/
+    ├── INDICE.md              # Índice de toda la documentación
+    ├── BACKEND.md             # Referencia código Python
+    ├── FRONTEND.md            # Referencia código React
     ├── ARCHITECTURE.md
-    └── API.md
+    ├── API.md
+    ├── DATOS_Y_MODELOS.md
+    ├── WAKE_WORD.md
+    ├── ACCIONES_NAVEGADOR.md
+    ├── SCRIPTS.md
+    └── DESPLIEGUE_SIN_DOCKER.md
 ```
 
 ---
@@ -287,7 +295,10 @@ Prefijo base: **`/api/v1`**
 | `POST` | `/voice/process-audio` | WAV → flujo completo | Sí |
 | `POST` | `/voice/listen` | Micrófono → flujo completo | Solo local |
 | `GET` | `/activation/config` | Config wake word | Sí |
-| `POST` | `/activation/listen` | Wake word + comando | Solo local |
+| `POST` | `/activation/score-chunk` | Puntuar fragmento PCM (wake word) | Sí |
+| `POST` | `/activation/score-chunks` | Puntuar lote de fragmentos | Sí |
+| `DELETE` | `/activation/session` | Cerrar sesión wake word | Sí |
+| `POST` | `/activation/listen` | Wake word + comando (mic servidor) | Solo local |
 
 Referencia completa con ejemplos de request/response: [`docs/API.md`](docs/API.md)
 
@@ -466,8 +477,16 @@ Lista completa en [`.env.example`](.env.example).
 
 | Documento | Contenido |
 |-----------|-----------|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Arquitectura, capas, ML y flujos detallados |
+| [`docs/INDICE.md`](docs/INDICE.md) | **Índice maestro** — empieza aquí |
+| [`docs/BACKEND.md`](docs/BACKEND.md) | Referencia de todo el código Python |
+| [`docs/FRONTEND.md`](docs/FRONTEND.md) | Referencia de todo el código React |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Arquitectura, capas, ML y flujos |
 | [`docs/API.md`](docs/API.md) | Referencia REST con ejemplos |
+| [`docs/DATOS_Y_MODELOS.md`](docs/DATOS_Y_MODELOS.md) | JSON, TensorFlow, wake word ONNX |
+| [`docs/WAKE_WORD.md`](docs/WAKE_WORD.md) | «Hey Jarvis» en Render y local |
+| [`docs/ACCIONES_NAVEGADOR.md`](docs/ACCIONES_NAVEGADOR.md) | Abrir YouTube; Safari y móviles |
+| [`docs/SCRIPTS.md`](docs/SCRIPTS.md) | Scripts de entrenamiento y deploy |
+| [`docs/DESPLIEGUE_SIN_DOCKER.md`](docs/DESPLIEGUE_SIN_DOCKER.md) | Render sin Docker |
 | [`DEPLOY.md`](DEPLOY.md) | Despliegue en Render y Docker |
 
 ---

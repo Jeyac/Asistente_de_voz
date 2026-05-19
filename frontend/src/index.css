@@ -1,3 +1,6 @@
+/**
+ * Estilos globales Tailwind y variables CSS.
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

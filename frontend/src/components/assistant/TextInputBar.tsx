@@ -1,3 +1,6 @@
+/**
+ * Componente del asistente de voz: TextInputBar.
+ */
 import { FormEvent, useState } from "react";
 
 interface TextInputBarProps {

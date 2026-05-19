@@ -1,3 +1,6 @@
+/**
+ * Componente UI reutilizable: Card.
+ */
 import type { ReactNode } from "react";
 
 interface CardProps {

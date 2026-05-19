@@ -29,6 +29,7 @@ def bootstrap_intent_model(settings: Settings) -> None:
 
         tf_predictor = loaded.predictor
         tf_label_count = len(tf_predictor._pipeline.label_encoder.labels)
+        # Envolver TF con matcher de palabras clave del JSON (intenciones nuevas sin reentrenar).
         hybrid = HybridIntentPredictor(
             tf_predictor,
             KeywordIntentMatcher(definitions),

@@ -89,7 +89,7 @@ Middleware registrado:
 
 Fuente: `data/intents/intents_dataset.json`
 
-- 8 intenciones con ~8–10 ejemplos cada una.
+- 19 intenciones con múltiples ejemplos en español cada una.
 - Idioma: español (`"language": "es"`).
 - Extensible añadiendo intenciones y reentrenando.
 
@@ -165,20 +165,25 @@ Si la confianza está por debajo del umbral, usa respuestas del intent fallback.
 
 ---
 
-## Wake word (solo local)
+## Wake word
 
 Motores soportados (`WAKEWORD_ENGINE`):
 
-- **openwakeword** — modelo ONNX en `models/wakeword/oye_sistema.onnx`
+- **openwakeword** — modelo ONNX (`hey_jarvis_v0.1.onnx` por defecto)
 - **porcupine** — requiere `PORCUPINE_ACCESS_KEY`
 
-Flujo `ActivateAndListenUseCase`:
+### Producción (Render + navegador)
 
-1. Escuchar hasta detectar la frase configurada.
-2. Capturar comando de voz con SpeechRecognition.
-3. Delegar en `ProcessVoiceCommandUseCase`.
+1. El frontend captura PCM 16 kHz en fragmentos de 1280 muestras.
+2. `POST /activation/score-chunk` o `/activation/score-chunks` con cabecera `X-Wake-Session`.
+3. `WakeWordChunkScorer` mantiene estado del modelo por sesión.
+4. Al superar `WAKEWORD_THRESHOLD`, el cliente graba el comando y llama a `/voice/process-audio`.
 
-En `APP_ENV=production` este flujo está **deshabilitado** (sin hardware de audio en la nube).
+Ver [WAKE_WORD.md](./WAKE_WORD.md).
+
+### Solo local (micrófono en servidor)
+
+`ActivateAndListenUseCase` + `POST /activation/listen` — deshabilitado si `APP_ENV=production`.
 
 ---
 
@@ -216,11 +221,18 @@ El cliente React (`frontend/`) graba audio a **16 kHz WAV** y lo envía a `/voic
 
 Componentes clave:
 
-- `useVoiceAssistant` — estado del asistente
-- `audioRecorder.ts` — captura y codificación WAV
-- `voiceService.ts` — cliente HTTP
+- `useVoiceAssistant` — estado del asistente, acciones URL, Safari
+- `useOpenWakeWord` — wake word con micrófono en navegador
+- `audioRecorder.ts` / `wakeWordMicStream.ts` — captura de audio
+- `ActionOpenBanner` — abrir enlaces en móvil (toque del usuario)
+
+Documentación detallada: [FRONTEND.md](./FRONTEND.md).
 
 En desarrollo, Vite hace proxy de `/api` al backend.
+
+## Acciones (abrir sitios)
+
+`IntentActionExecutor` devuelve URLs; el frontend abre con `window.open` o banner en Safari. Ver [ACCIONES_NAVEGADOR.md](./ACCIONES_NAVEGADOR.md).
 
 ---
 
@@ -232,5 +244,9 @@ En desarrollo, Vite hace proxy de `/api` al backend.
 | `/voice/process-audio` | Sí | Sí |
 | `/voice/listen` | Sí | No |
 | `/activation/listen` | Sí | No |
-| Wake word | Sí | No (`WAKEWORD_ENABLED=false`) |
-| Entrenamiento ML | Manual o script | Automático en Docker build |
+| Wake word (navegador) | Sí | Sí (`score-chunk` / `score-chunks`) |
+| Wake word (mic servidor) | Sí | No |
+| Abrir URLs (YouTube, etc.) | Sí | Sí (botón en Safari) |
+| Entrenamiento ML | Manual o script | Automático en build |
+
+Guía Render sin Docker: [DESPLIEGUE_SIN_DOCKER.md](./DESPLIEGUE_SIN_DOCKER.md).

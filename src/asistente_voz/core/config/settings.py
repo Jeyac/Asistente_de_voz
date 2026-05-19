@@ -1,4 +1,9 @@
-"""Agregador de configuración modular desde variables de entorno."""
+"""
+Agregador de configuración modular desde variables de entorno.
+
+Combina App, Server, ML, WakeWord, Actions, etc. en un único objeto Settings.
+Se carga desde .env y variables del sistema (p. ej. Render).
+"""
 
 from functools import lru_cache
 

@@ -1,9 +1,19 @@
+/**
+ * Hook principal del asistente de voz.
+ *
+ * Gestiona: estado de la UI, grabación WAV, envío a la API, síntesis de voz,
+ * apertura de enlaces (YouTube, etc.) y reacción al wake word «Hey Jarvis».
+ */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "../services/apiClient";
 import { checkHealth } from "../services/healthService";
 import { processVoiceAudio, processVoiceText } from "../services/voiceService";
 import type { AssistantStatus, VoiceProcessResult } from "../types/api";
 import { AudioRecorder } from "../utils/audioRecorder";
+import {
+  shouldShowOpenLinkButton,
+  tryOpenExternalUrl,
+} from "../utils/openExternalUrl";
 import {
   getVoiceEnabled,
   isSpeechSynthesisSupported,
@@ -12,6 +22,7 @@ import {
   stopSpeaking,
 } from "../utils/speechSynthesis";
 
+/** Estado global del asistente en la interfaz. */
 interface AssistantState {
   status: AssistantStatus;
   transcript: string;
@@ -22,9 +33,12 @@ interface AssistantState {
   apiOnline: boolean;
   voiceEnabled: boolean;
   wakeWordEnabled: boolean;
+  /** Enlace a abrir (YouTube, etc.); en móvil el usuario debe tocar el botón. */
+  actionLink: { url: string; intent: string } | null;
 }
 
 const WAKEWORD_STORAGE_KEY = "asistente-voz-wakeword-enabled";
+/** Tiempo máximo de grabación del comando tras detectar «Hey Jarvis». */
 const COMMAND_AUTO_STOP_MS = 10_000;
 
 function getWakeWordEnabledDefault(): boolean {
@@ -43,6 +57,7 @@ const initialState: AssistantState = {
   apiOnline: false,
   voiceEnabled: getVoiceEnabled(),
   wakeWordEnabled: getWakeWordEnabledDefault(),
+  actionLink: null,
 };
 
 export function useVoiceAssistant() {
@@ -50,8 +65,10 @@ export function useVoiceAssistant() {
   const recorderRef = useRef<AudioRecorder | null>(null);
   const commandTimerRef = useRef<number | null>(null);
   const voiceEnabledRef = useRef(state.voiceEnabled);
+  // Refs para callbacks async (evitan cierres obsoletos del estado React).
   const statusRef = useRef(state.status);
 
+  // Comprueba si la API está disponible al cargar la página.
   useEffect(() => {
     voiceEnabledRef.current = state.voiceEnabled;
   }, [state.voiceEnabled]);
@@ -72,12 +89,35 @@ export function useVoiceAssistant() {
     }
   }, []);
 
-  const openActionUrl = useCallback((result: VoiceProcessResult) => {
-    if (result.action_url) {
-      window.open(result.action_url, "_blank", "noopener,noreferrer");
-    }
-  }, []);
+  /**
+   * Gestiona la URL de acción (p. ej. YouTube).
+   * En móvil: siempre muestra botón/enlace (Safari y Chrome bloquean popups async).
+   * En escritorio: intenta window.open y muestra botón si falla.
+   */
+  const openActionUrl = useCallback(
+    (result: VoiceProcessResult) => {
+      const url = result.action_url;
+      if (!url) {
+        setState((prev) => ({ ...prev, actionLink: null }));
+        return;
+      }
 
+      const needsButton = shouldShowOpenLinkButton();
+      const opened = !needsButton && tryOpenExternalUrl(url);
+
+      setState((prev) => ({
+        ...prev,
+        actionLink: needsButton || !opened ? { url, intent: result.intent } : null,
+      }));
+
+      if ((needsButton || !opened) && result.response) {
+        speakResponse(`${result.response} Toca el botón para abrir el enlace.`);
+      }
+    },
+    [speakResponse],
+  );
+
+  /** Aplica la respuesta de la API a la interfaz y dispara apertura de enlaces. */
   const applyResult = useCallback(
     (result: VoiceProcessResult) => {
       setState((prev) => ({
@@ -90,10 +130,18 @@ export function useVoiceAssistant() {
         error: null,
       }));
       openActionUrl(result);
-      speakResponse(result.response);
+      // En móvil openActionUrl ya indica que toque el botón; en escritorio hablamos la respuesta.
+      if (!shouldShowOpenLinkButton()) {
+        speakResponse(result.response);
+      }
     },
     [openActionUrl, speakResponse],
   );
+
+  /** Oculta el banner/botón de enlace tras abrir o cancelar. */
+  const dismissActionLink = useCallback(() => {
+    setState((prev) => ({ ...prev, actionLink: null }));
+  }, []);
 
   const setError = useCallback((message: string) => {
     stopSpeaking();
@@ -121,8 +169,10 @@ export function useVoiceAssistant() {
     }
   }, [state.response]);
 
+  /** Inicia grabación del comando (botón micrófono o tras wake word). */
   const startListening = useCallback(async () => {
     stopSpeaking();
+    // Actualizar ref antes del await para pausar el wake word de inmediato.
     statusRef.current = "listening";
     setState((prev) => ({
       ...prev,
@@ -171,6 +221,7 @@ export function useVoiceAssistant() {
     }
   }, [applyResult, setError, clearCommandTimer]);
 
+  /** Llamado por useOpenWakeWord cuando el servidor detecta «Hey Jarvis». */
   const handleWakeWordDetected = useCallback(async () => {
     if (statusRef.current === "listening" || statusRef.current === "processing") {
       return;
@@ -224,6 +275,7 @@ export function useVoiceAssistant() {
       apiOnline: prev.apiOnline,
       voiceEnabled: prev.voiceEnabled,
       wakeWordEnabled: prev.wakeWordEnabled,
+      actionLink: null,
     }));
   }, []);
 
@@ -236,6 +288,8 @@ export function useVoiceAssistant() {
     toggleWakeWord,
     replayResponse,
     handleWakeWordDetected,
+    dismissActionLink,
+    actionLink: state.actionLink,
     speechSupported: isSpeechSynthesisSupported(),
     isListening: state.status === "listening",
     isProcessing: state.status === "processing",

@@ -1,5 +1,11 @@
-/** Captura micrófono y emite fragmentos PCM int16 mono 16 kHz (1280 muestras). */
+/**
+ * Captura continua del micrófono para detección de «Hey Jarvis».
+ *
+ * Emite fragmentos PCM int16 mono a 16 kHz (1280 muestras = 2560 bytes),
+ * formato esperado por POST /activation/score-chunk(s).
+ */
 
+/** Muestras por fragmento (~80 ms a 16 kHz). */
 export const WAKE_CHUNK_SAMPLES = 1280;
 const TARGET_SAMPLE_RATE = 16_000;
 
@@ -23,6 +29,7 @@ function downsample(buffer: Float32Array, inputRate: number, outputRate: number)
   return result;
 }
 
+/** Stream de micrófono dedicado al wake word (separado del grabador de comandos). */
 export class WakeWordMicStream {
   private audioContext: AudioContext | null = null;
   private mediaStream: MediaStream | null = null;
@@ -40,6 +47,7 @@ export class WakeWordMicStream {
     });
 
     this.audioContext = new AudioContext({ sampleRate: TARGET_SAMPLE_RATE });
+    // En iOS/Safari el contexto arranca suspendido hasta resume() explícito.
     if (this.audioContext.state === "suspended") {
       await this.audioContext.resume();
     }
@@ -61,6 +69,7 @@ export class WakeWordMicStream {
       }
     };
 
+    // Salida en silencio: el procesador debe estar conectado pero sin reproducir eco.
     const silent = this.audioContext.createGain();
     silent.gain.value = 0;
     source.connect(this.processor);

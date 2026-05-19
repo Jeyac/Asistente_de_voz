@@ -1,3 +1,6 @@
+/**
+ * Cliente HTTP / servicio: healthService.
+ */
 import type { HealthResponse } from "../types/api";
 import { apiGet } from "./apiClient";
 

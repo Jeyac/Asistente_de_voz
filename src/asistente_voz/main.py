@@ -1,4 +1,9 @@
-"""Punto de entrada de la aplicación FastAPI."""
+"""
+Punto de entrada de la aplicación FastAPI.
+
+Uso local: python -m asistente_voz.main  o  uvicorn asistente_voz.main:app
+Requiere PYTHONPATH=src (o instalar el paquete en editable).
+"""
 
 from asistente_voz.core.app_factory import create_app
 from asistente_voz.core.config.settings import get_settings

@@ -1,3 +1,9 @@
+/**
+ * Cliente HTTP para wake word y activación por palabra clave.
+ *
+ * El audio PCM se envía con la cabecera X-Wake-Session para mantener
+ * el estado del modelo openWakeWord en el servidor entre fragmentos.
+ */
 import { apiDelete, apiGet, apiPostBinary } from "./apiClient";
 
 export interface ActivationConfig {

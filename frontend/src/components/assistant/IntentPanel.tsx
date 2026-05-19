@@ -1,3 +1,6 @@
+/**
+ * Componente del asistente de voz: IntentPanel.
+ */
 import { Badge } from "../ui/Badge";
 import { Card } from "../ui/Card";
 
@@ -6,6 +9,7 @@ interface IntentPanelProps {
   confidence: number;
 }
 
+/** Muestra la intención clasificada por TensorFlow (p. ej. abrir_youtube). */
 export function IntentPanel({ intent, confidence }: IntentPanelProps) {
   const hasIntent = Boolean(intent);
 

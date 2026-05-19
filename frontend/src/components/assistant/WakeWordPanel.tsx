@@ -1,3 +1,6 @@
+/**
+ * Componente del asistente de voz: WakeWordPanel.
+ */
 import { Card } from "../ui/Card";
 
 interface WakeWordPanelProps {

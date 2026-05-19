@@ -1,3 +1,6 @@
+/**
+ * Punto de entrada de la aplicación React (monta App en el DOM).
+ */
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";

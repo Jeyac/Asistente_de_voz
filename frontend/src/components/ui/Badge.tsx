@@ -1,3 +1,6 @@
+/**
+ * Componente UI reutilizable: Badge.
+ */
 import type { ReactNode } from "react";
 
 interface BadgeProps {
