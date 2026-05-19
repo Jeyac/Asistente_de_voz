@@ -175,11 +175,31 @@ El arranque usa `scripts/render_start.sh` → uvicorn en el puerto que Render as
 
 ---
 
+## Si el deploy falló (Blueprint)
+
+Causas corregidas en el repo:
+
+1. **PyAudio** no compila en Render → la API usa `requirements-prod.txt` (sin PyAudio).
+2. **Scripts `.sh` con saltos Windows** → archivo `.gitattributes` fuerza LF.
+3. **Frontend** → `rootDir: frontend` en `render.yaml`.
+
+**Qué hacer ahora:**
+
+```powershell
+git add .
+git commit -m "Fix deploy Render: requirements-prod, rootDir frontend"
+git push
+```
+
+En Render: **Blueprint** → **Manual sync** o borra los servicios fallidos y vuelve a **Apply**.
+
+Revisa **Logs** del build en cada servicio si vuelve a fallar.
+
 ## Si el build de la API falla
 
 - Revisa **Logs** del servicio API en Render.
 - Causas habituales: timeout (plan free), memoria insuficiente.
-- Solución: volver a **Manual Deploy** o reducir `TF_EPOCHS` en Environment a `80` temporalmente.
+- Solución: **Manual Deploy** o bajar `TF_EPOCHS` a `50` en Environment.
 
 ## Archivos de esta modalidad
 

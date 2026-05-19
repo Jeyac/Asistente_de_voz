@@ -54,7 +54,7 @@ services:
       - key: TF_FALLBACK_INTENT
         value: desconocido
       - key: TF_EPOCHS
-        value: "120"
+        value: "80"
       - key: TF_VALIDATION_SPLIT
         value: "0"
       - key: RETRAIN_INTENTS_ALWAYS
@@ -93,9 +93,12 @@ services:
   - type: web
     name: asistente-voz-web
     runtime: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
     pullRequestPreviewsEnabled: true
     envVars:
+      - key: NODE_VERSION
+        value: "20"
       - key: VITE_API_BASE_URL
         sync: false
