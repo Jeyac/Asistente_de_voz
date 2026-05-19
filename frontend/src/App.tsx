@@ -10,9 +10,17 @@ import { useVoiceAssistant } from "./hooks/useVoiceAssistant";
 
 export default function App() {
   const assistant = useVoiceAssistant();
-  const { wakeWordListening, wakeWordError, wakeWordPhrase, wakeWordAvailable } = useOpenWakeWord({
+  const {
+    wakeWordListening,
+    wakeWordError,
+    wakeWordPhrase,
+    wakeWordAvailable,
+    wakeWordLastScore,
+    wakeWordThreshold,
+  } = useOpenWakeWord({
     enabled: assistant.wakeWordEnabled,
     apiOnline: assistant.apiOnline,
+    micPaused: assistant.isListening || assistant.isProcessing,
     onWakeWord: assistant.handleWakeWordDetected,
   });
 
@@ -27,6 +35,8 @@ export default function App() {
         phrase={wakeWordPhrase}
         available={wakeWordAvailable}
         apiOnline={assistant.apiOnline}
+        lastScore={wakeWordLastScore}
+        threshold={wakeWordThreshold}
         onToggle={assistant.toggleWakeWord}
       />
 

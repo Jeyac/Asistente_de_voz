@@ -99,6 +99,35 @@ async def score_wake_chunk(
     )
 
 
+@router.post(
+    "/score-chunks",
+    response_model=WakeWordChunkScoreResponse,
+    summary="Puntuar varios fragmentos PCM en una petición",
+    description=(
+        "PCM int16 mono 16 kHz concatenado (múltiplos de 2560 bytes). "
+        "Reduce latencia de red frente a /score-chunk repetido."
+    ),
+)
+async def score_wake_chunks(
+    request: Request,
+    scorer: WakeWordChunkScorerDep,
+    x_wake_session: str | None = Header(default=None, alias="X-Wake-Session"),
+) -> WakeWordChunkScoreResponse:
+    from asistente_voz.domain.exceptions.base import ValidationError
+
+    if not x_wake_session:
+        raise ValidationError(message="Falta la cabecera X-Wake-Session.")
+    body = await request.body()
+    result = await asyncio.to_thread(scorer.score_chunks, x_wake_session, body)
+    safe_score = max(0.0, float(result.score))
+    return WakeWordChunkScoreResponse(
+        score=round(safe_score, 4),
+        activated=result.activated,
+        phrase=result.phrase,
+        threshold=result.threshold,
+    )
+
+
 @router.delete(
     "/session",
     status_code=status.HTTP_204_NO_CONTENT,

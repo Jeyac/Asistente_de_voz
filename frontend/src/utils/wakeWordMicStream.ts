@@ -34,11 +34,16 @@ export class WakeWordMicStream {
       audio: {
         echoCancellation: true,
         noiseSuppression: true,
+        autoGainControl: true,
         channelCount: 1,
       },
     });
 
     this.audioContext = new AudioContext({ sampleRate: TARGET_SAMPLE_RATE });
+    if (this.audioContext.state === "suspended") {
+      await this.audioContext.resume();
+    }
+
     const inputRate = this.audioContext.sampleRate;
     const source = this.audioContext.createMediaStreamSource(this.mediaStream);
     this.processor = this.audioContext.createScriptProcessor(4096, 1, 1);
@@ -56,8 +61,11 @@ export class WakeWordMicStream {
       }
     };
 
+    const silent = this.audioContext.createGain();
+    silent.gain.value = 0;
     source.connect(this.processor);
-    this.processor.connect(this.audioContext.destination);
+    this.processor.connect(silent);
+    silent.connect(this.audioContext.destination);
   }
 
   async stop(): Promise<void> {

@@ -65,6 +65,9 @@ export class AudioRecorder {
     });
 
     this.audioContext = new AudioContext();
+    if (this.audioContext.state === "suspended") {
+      await this.audioContext.resume();
+    }
     const source = this.audioContext.createMediaStreamSource(this.mediaStream);
     this.processor = this.audioContext.createScriptProcessor(4096, 1, 1);
     this.chunks = [];

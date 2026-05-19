@@ -92,6 +92,62 @@ class WakeWordChunkScorer:
             threshold=threshold,
         )
 
+    def score_chunks(self, session_id: str, pcm_bytes: bytes) -> WakeWordChunkScore:
+        """Puntúa varios fragmentos consecutivos en una sola petición (menos latencia en Render)."""
+        if not self._settings.wakeword_enabled:
+            raise ValidationError(
+                message="La palabra clave está desactivada en el servidor.",
+                details={"hint": "Configure WAKEWORD_ENABLED=true"},
+            )
+        if self._settings.wakeword_engine != "openwakeword":
+            raise ValidationError(
+                message="El puntaje por fragmentos solo está disponible con openWakeWord.",
+                details={"engine": self._settings.wakeword_engine},
+            )
+        if not pcm_bytes:
+            raise ValidationError(
+                message="Cuerpo de audio vacío.",
+                details={"expected_multiple_of": EXPECTED_CHUNK_BYTES},
+            )
+        if len(pcm_bytes) % EXPECTED_CHUNK_BYTES != 0:
+            raise ValidationError(
+                message="Tamaño de audio inválido (debe ser múltiplo del fragmento).",
+                details={
+                    "chunk_bytes": EXPECTED_CHUNK_BYTES,
+                    "received_bytes": len(pcm_bytes),
+                },
+            )
+
+        session_id = session_id.strip()
+        if not session_id or len(session_id) > 128:
+            raise ValidationError(message="Cabecera X-Wake-Session inválida.")
+
+        detector = self._get_detector(session_id)
+        threshold = self._settings.wakeword_threshold
+        max_score = 0.0
+        activated = False
+
+        for offset in range(0, len(pcm_bytes), EXPECTED_CHUNK_BYTES):
+            chunk_bytes = pcm_bytes[offset : offset + EXPECTED_CHUNK_BYTES]
+            pcm = np.frombuffer(chunk_bytes, dtype=np.int16).copy()
+            score = detector.score_int16_chunk(pcm)
+            max_score = max(max_score, float(score))
+            if score >= threshold:
+                activated = True
+                logger.info(
+                    "Palabra clave detectada (lote) | phrase='%s' | score=%.3f",
+                    self._settings.wakeword_phrase,
+                    score,
+                )
+                break
+
+        return WakeWordChunkScore(
+            score=max_score,
+            activated=activated,
+            phrase=self._settings.wakeword_phrase,
+            threshold=threshold,
+        )
+
     def end_session(self, session_id: str) -> None:
         with self._lock:
             entry = self._sessions.pop(session_id.strip(), None)

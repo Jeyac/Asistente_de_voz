@@ -28,6 +28,16 @@ export function scoreWakeWordChunk(
   });
 }
 
+/** Varios fragmentos de 2560 bytes concatenados (menos viajes HTTP en producción). */
+export function scoreWakeWordChunks(
+  sessionId: string,
+  pcmBatch: ArrayBuffer,
+): Promise<WakeWordChunkScore> {
+  return apiPostBinary<WakeWordChunkScore>("/activation/score-chunks", pcmBatch, {
+    "X-Wake-Session": sessionId,
+  });
+}
+
 export function endWakeWordSession(sessionId: string): Promise<void> {
   return apiDelete("/activation/session", { "X-Wake-Session": sessionId });
 }

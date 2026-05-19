@@ -50,10 +50,15 @@ export function useVoiceAssistant() {
   const recorderRef = useRef<AudioRecorder | null>(null);
   const commandTimerRef = useRef<number | null>(null);
   const voiceEnabledRef = useRef(state.voiceEnabled);
+  const statusRef = useRef(state.status);
 
   useEffect(() => {
     voiceEnabledRef.current = state.voiceEnabled;
   }, [state.voiceEnabled]);
+
+  useEffect(() => {
+    statusRef.current = state.status;
+  }, [state.status]);
 
   useEffect(() => {
     checkHealth()
@@ -118,18 +123,20 @@ export function useVoiceAssistant() {
 
   const startListening = useCallback(async () => {
     stopSpeaking();
+    statusRef.current = "listening";
+    setState((prev) => ({
+      ...prev,
+      status: "listening",
+      error: null,
+      transcript: "",
+      intent: "",
+      response: "",
+    }));
     try {
       recorderRef.current = new AudioRecorder();
       await recorderRef.current.start();
-      setState((prev) => ({
-        ...prev,
-        status: "listening",
-        error: null,
-        transcript: "",
-        intent: "",
-        response: "",
-      }));
     } catch {
+      statusRef.current = "error";
       setError("No se pudo acceder al micrófono. Verifique los permisos del navegador.");
     }
   }, [setError]);
@@ -165,7 +172,7 @@ export function useVoiceAssistant() {
   }, [applyResult, setError, clearCommandTimer]);
 
   const handleWakeWordDetected = useCallback(async () => {
-    if (state.status === "listening" || state.status === "processing") {
+    if (statusRef.current === "listening" || statusRef.current === "processing") {
       return;
     }
     speakText("Te escucho");
@@ -176,7 +183,7 @@ export function useVoiceAssistant() {
         void stopListening();
       }
     }, COMMAND_AUTO_STOP_MS);
-  }, [state.status, startListening, stopListening, clearCommandTimer]);
+  }, [startListening, stopListening, clearCommandTimer]);
 
   const toggleWakeWord = useCallback(() => {
     setState((prev) => {

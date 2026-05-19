@@ -7,6 +7,8 @@ interface WakeWordPanelProps {
   phrase: string;
   available: boolean;
   apiOnline: boolean;
+  lastScore: number | null;
+  threshold: number | null;
   onToggle: () => void;
 }
 
@@ -17,6 +19,8 @@ export function WakeWordPanel({
   phrase,
   available,
   apiOnline,
+  lastScore,
+  threshold,
   onToggle,
 }: WakeWordPanelProps) {
   const displayPhrase = phrase.trim() || "hey jarvis";
@@ -35,9 +39,15 @@ export function WakeWordPanel({
                 ? "Iniciando detector (openWakeWord en el servidor)…"
                 : "Activa para hablar sin pulsar el botón."}
           </p>
+          {listening && apiOnline && lastScore !== null && threshold !== null && (
+            <p className="mt-1 text-xs text-slate-500">
+              Señal: {(lastScore * 100).toFixed(0)}% (activa desde {(threshold * 100).toFixed(0)}%). Si se queda en 0%,
+              el micrófono no está llegando al servidor.
+            </p>
+          )}
           {listening && apiOnline && (
             <p className="mt-1 text-xs text-slate-500">
-              En Render el audio va al servidor: la primera vez puede tardar unos segundos (arranque en frío).
+              Di en inglés «{displayPhrase}» cerca del micrófono. Tras activar, habla tu comando en español.
             </p>
           )}
         </div>
