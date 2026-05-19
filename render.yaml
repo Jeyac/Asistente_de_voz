@@ -87,9 +87,9 @@ services:
         value: Kevin Estrada
       - key: PARTNER_DISPLAY_TITLE
         value: su guapo, precioso, hermoso, maravilloso e increíble novio
-      # URL del frontend estático (configurar tras crear asistente-voz-web):
+      # Origen del frontend (sin barra final). Ajusta si cambia la URL del static site.
       - key: CORS_ORIGINS
-        sync: false
+        value: https://asistente-voz-web-lc6b.onrender.com
 
   # --- Frontend (Static Site) ---
   - type: web
@@ -102,5 +102,6 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "20"
+      # Obligatorio para el build del frontend (debe terminar en /api/v1)
       - key: VITE_API_BASE_URL
-        sync: false
+        value: https://asistente-voz-api.onrender.com/api/v1
