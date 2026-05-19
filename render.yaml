@@ -74,7 +74,7 @@ services:
       - key: WAKEWORD_MODEL_PATH
         value: models/wakeword/hey_jarvis_v0.1.onnx
       - key: WAKEWORD_THRESHOLD
-        value: "0.4"
+        value: "0.30"
       - key: WAKEWORD_LISTEN_TIMEOUT
         value: "60"
       - key: ENABLE_SYSTEM_ACTIONS

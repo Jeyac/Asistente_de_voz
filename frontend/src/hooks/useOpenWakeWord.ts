@@ -9,7 +9,8 @@ import {
 import { WakeWordMicStream } from "../utils/wakeWordMicStream";
 
 const COOLDOWN_MS = 2500;
-const MAX_PENDING_CHUNKS = 2;
+/** En Render la red es lenta: no descartar chunks nuevos (openWakeWord necesita secuencia continua). */
+const MAX_QUEUE_CHUNKS = 24;
 
 export interface UseOpenWakeWordOptions {
   enabled: boolean;
@@ -87,8 +88,8 @@ export function useOpenWakeWord({ enabled, apiOnline, onWakeWord }: UseOpenWakeW
     (chunk: Int16Array) => {
       if (cooldownRef.current) return;
       chunkQueueRef.current.push(chunk);
-      if (chunkQueueRef.current.length > MAX_PENDING_CHUNKS) {
-        chunkQueueRef.current = chunkQueueRef.current.slice(-MAX_PENDING_CHUNKS);
+      if (chunkQueueRef.current.length > MAX_QUEUE_CHUNKS) {
+        chunkQueueRef.current.shift();
       }
       void drainQueue();
     },

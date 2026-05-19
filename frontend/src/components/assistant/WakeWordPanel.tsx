@@ -30,11 +30,16 @@ export function WakeWordPanel({
           </h3>
           <p className="mt-1 text-sm text-slate-400">
             {listening
-              ? `Escuchando… di «${displayPhrase}» y luego tu comando.`
+              ? `Escuchando… di en inglés «${displayPhrase}» (claro, cerca del micrófono) y luego tu comando.`
               : enabled
                 ? "Iniciando detector (openWakeWord en el servidor)…"
                 : "Activa para hablar sin pulsar el botón."}
           </p>
+          {listening && apiOnline && (
+            <p className="mt-1 text-xs text-slate-500">
+              En Render el audio va al servidor: la primera vez puede tardar unos segundos (arranque en frío).
+            </p>
+          )}
         </div>
         <button
           type="button"
