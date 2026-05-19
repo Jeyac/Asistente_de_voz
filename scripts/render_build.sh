@@ -6,6 +6,9 @@ echo "=== Instalando dependencias de producción ==="
 pip install --upgrade pip
 pip install -r requirements-prod.txt
 
+echo "=== openWakeWord (solo ONNX, sin tflite-runtime) ==="
+pip install openwakeword==0.6.0 --no-deps
+
 echo "=== Modelo spaCy ==="
 python -m spacy download es_core_news_sm
 

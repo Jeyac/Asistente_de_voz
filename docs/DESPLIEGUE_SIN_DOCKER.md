@@ -180,8 +180,9 @@ El arranque usa `scripts/render_start.sh` → uvicorn en el puerto que Render as
 Causas corregidas en el repo:
 
 1. **PyAudio** no compila en Render → la API usa `requirements-prod.txt` (sin PyAudio).
-2. **Scripts `.sh` con saltos Windows** → archivo `.gitattributes` fuerza LF.
-3. **Frontend** → `rootDir: frontend` en `render.yaml`.
+2. **openWakeWord + Python 3.12** pedía `tflite-runtime` (no existe) → Render usa **Python 3.11** e instala openWakeWord con `--no-deps`.
+3. **Scripts `.sh` con saltos Windows** → archivo `.gitattributes` fuerza LF.
+4. **Frontend** → `rootDir: frontend` en `render.yaml`.
 
 **Qué hacer ahora:**
 

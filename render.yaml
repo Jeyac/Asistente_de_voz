@@ -13,6 +13,8 @@ services:
     healthCheckPath: /api/v1/health
     autoDeploy: true
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
       - key: APP_ENV
         value: production
       - key: DEBUG
