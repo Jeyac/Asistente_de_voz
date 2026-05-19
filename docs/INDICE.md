@@ -18,6 +18,7 @@ Documentación técnica del proyecto **Asistente de Voz**. Empieza aquí si quie
 | [WAKE_WORD.md](./WAKE_WORD.md) | «Hey Jarvis»: micrófono, score-chunk, Render |
 | [ACCIONES_NAVEGADOR.md](./ACCIONES_NAVEGADOR.md) | Abrir YouTube/Google; Safari y móviles |
 | [SCRIPTS.md](./SCRIPTS.md) | Scripts de entrenamiento, build y arranque |
+| [LIBRERIAS_Y_DEPENDENCIAS.md](./LIBRERIAS_Y_DEPENDENCIAS.md) | **Librerías pip/npm, versiones, modelos y servicios externos** |
 | [DESPLIEGUE_SIN_DOCKER.md](./DESPLIEGUE_SIN_DOCKER.md) | Render sin Docker (`render.yaml`) |
 
 ---

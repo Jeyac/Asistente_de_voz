@@ -486,6 +486,7 @@ Lista completa en [`.env.example`](.env.example).
 | [`docs/WAKE_WORD.md`](docs/WAKE_WORD.md) | «Hey Jarvis» en Render y local |
 | [`docs/ACCIONES_NAVEGADOR.md`](docs/ACCIONES_NAVEGADOR.md) | Abrir YouTube; Safari y móviles |
 | [`docs/SCRIPTS.md`](docs/SCRIPTS.md) | Scripts de entrenamiento y deploy |
+| [`docs/LIBRERIAS_Y_DEPENDENCIAS.md`](docs/LIBRERIAS_Y_DEPENDENCIAS.md) | Librerías pip/npm, versiones, modelos y APIs externas |
 | [`docs/DESPLIEGUE_SIN_DOCKER.md`](docs/DESPLIEGUE_SIN_DOCKER.md) | Render sin Docker |
 | [`DEPLOY.md`](DEPLOY.md) | Despliegue en Render y Docker |
 
